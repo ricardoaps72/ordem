@@ -92,9 +92,9 @@ class Clientes extends CI_Controller{
             
             if($this->form_validation->run()){
                 
-                echo '<pre>';
-                print_r($this->input->post());
-                exit();
+//                echo '<pre>';
+//                print_r($this->input->post());
+//                exit();
                 
             } else {
                 
@@ -111,12 +111,12 @@ class Clientes extends CI_Controller{
 
         );
 
-        echo '<pre>';
-        print_r($data['cliente']);
-        exit(); 
+//        echo '<pre>';
+//        print_r($data['cliente']);
+//        exit(); 
 
         $this->load->view('layout/header', $data);
-        $this->load->view('clientes/index');
+        $this->load->view('clientes/edit');
         $this->load->view('layout/footer');
 
                 
