@@ -18,15 +18,16 @@
               
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <a title = "Voltar" href="<?php echo base_url('clientes'); ?>" class="btn btn-success btn-sm float-right">
-                                <i class="fas fa-arrow-left"></i>&nbsp;
-                                voltar</a>
-                        </div>
                         <div class="card-body">
                             
-                            <form class="user" method="post" name="form_edit">
-                          <div class="form-group row">
+                        <form class="user" method="post" name="form_edit">
+                            
+                            <p><strong><i class="fas fa-clock"></i>&nbsp;&nbsp; Última alteração: </strong>&nbsp;<?php echo formata_data_banco_com_hora($cliente->cliente_data_alteracao); ?> </p>
+                        
+                            <fieldset class="mt-4 border p-2" >
+                                <legend class="font-small"><i class="fas fa-user-tie">&nbsp;Dados pessoais </i> </legend>
+                                
+                            <div class="form-group row">
                               <div class="col-md-4">
                                   <label>Nome</label>
                                   <input type="text" class="form-control form-control-user" name="cliente_nome" placeholder="Seu nome" value="<?php echo $cliente->cliente_nome ?>">
@@ -38,18 +39,42 @@
                                     <?php echo form_error('cliente_sobrenome', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                               </div>                                  
                               <div class="col-md-2">
-                                  <label>CPF_CNPJ</label>
-                                  <input type="text" class="form-control form-control-user cnpj" name="cliente_cpf_cnpj" placeholder="Seu CPF_CNPJ" value="<?php echo $cliente->cliente_cpf_cnpj ?>">
-                                    <?php echo form_error('cliente_cpf_cnpj', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+
+                                  <?php if ($cliente->cliente_tipo == 1): ?>
+                                    <label>CPF</label>
+                                  <?php else :?>
+                                    <label>CNPJ</label>
+                                  <?php endif;?>
+
+                                  <?php if ($cliente->cliente_tipo == 1): ?>
+                                  <input type="text" class="form-control form-control-user cpf" name= "cliente_cpf" placeholder= <?php echo ($cliente->cliente_tipo == 1 ? 'CPF do cliente' : 'CNPJ do cliente' ) ?> value="<?php echo $cliente->cliente_cpf_cnpj ?>">
+                                    <?php echo form_error('cliente_cpf', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                  <?php else :?>
+                                  <input type="text" class="form-control form-control-user cnpj" name= "cliente_cnpj" placeholder= <?php echo ($cliente->cliente_tipo == 1 ? 'CPF do cliente' : 'CNPJ do cliente' ) ?> value="<?php echo $cliente->cliente_cpf_cnpj ?>">
+                                    <?php echo form_error('cliente_cnpj', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                  <?php endif;?>
+                                  
                               </div>                                  
                               <div class="col-md-2">
-                                  <label>RG_IE</label>
-                                  <input type="text" class="form-control form-control-user" name="cliente_rg_ie" placeholder="Seu CPF_CNPJ" value="<?php echo $cliente->cliente_rg_ie ?>">
-                                    <?php echo form_error('cliente_rg_ie', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                  
+                                  <?php if ($cliente->cliente_tipo == 1): ?>
+                                    <label>RG</label>
+                                  <?php else :?>
+                                    <label>IE</label>
+                                  <?php endif;?>                                  
+
+                                  <?php if ($cliente->cliente_tipo == 1): ?>
+                                  <input type="text" class="form-control form-control-user" name= "cliente_rg" placeholder= <?php echo ($cliente->cliente_tipo == 1 ?  'RG do cliente' : 'IE do cliente' )?> value="<?php echo $cliente->cliente_rg_ie ?>">
+                                    <?php echo form_error('cliente_rg', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                  <?php else :?>
+                                  <input type="text" class="form-control form-control-user" name= "cliente_ie" placeholder= <?php echo ($cliente->cliente_tipo == 1 ?  'RG do cliente' : 'IE do cliente' )?> value="<?php echo $cliente->cliente_rg_ie ?>">
+                                    <?php echo form_error('cliente_ie', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                  <?php endif;?>                                  
+                                    
                               </div>                                                                
-                          </div>
-                                
-                          <div class="form-group row">
+                            </div>
+
+                            <div class="form-group row">
                               <div class="col-md-4">
                                   <label>E-mail</label>
                                   <input type="email" class="form-control form-control-user" name="cliente_email" placeholder="Seu nome" value="<?php echo $cliente->cliente_email ?>">
@@ -65,57 +90,92 @@
                                   <input type="text" class="form-control form-control-user sp_celphones" name="cliente_celular" placeholder="Celular" value="<?php echo $cliente->cliente_celular ?>">
                                     <?php echo form_error('cliente_celular', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                               </div>                                  
-                              <div class="col-md-2">
+                              <div class="col-md-4">
                                   <label>Data nascimento</label>
-                                  <input type="date" class="form-control form-control-user" name="cliente_data_nascimento" placeholder="Data de nascimento" value="<?php echo $cliente->cliente_data_nascimento ?>">
+                                  <input type="date" class="form-control form-control-user-date" name="cliente_data_nascimento" placeholder="Data de nascimento" value="<?php echo $cliente->cliente_data_nascimento ?>">
                                     <?php echo form_error('cliente_data_nascimento', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                               </div>                                                                
-                              <div class="col-md-2">
-                                  <label>Cep</label>
-                                  <input type="text" class="form-control form-control-user cep" name="cliente_cep" placeholder="Seu Cep" value="<?php echo $cliente->cliente_cep ?>">
-                                    <?php echo form_error('cliente_cep', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
-                              </div>                                                                                              
                           </div>                            
+                          </fieldset>
                           
+                          <fieldset class="mt-4 border p-2" >
+                            <legend class="font-small"><i class="fas fa-map-marker-alt">&nbsp;Dados de endereço </i> </legend>
+                            
                           <div class="form-group row">
-                              <div class="col-md-4">
+
+                              <div class="col-md-6">
                                   <label>Endereço</label>
                                   <input type="text" class="form-control form-control-user" name="cliente_endereco" placeholder="Seu endereço" value="<?php echo $cliente->cliente_endereco ?>">
                                   <?php echo form_error('cliente_endereco', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                               </div>                                  
-                              <div class="col-md-1">
+                              <div class="col-md-2">
                                   <label>Número</label>
                                   <input type="text" class="form-control form-control-user" name="cliente_numero_endereco" placeholder="Número" value="<?php echo $cliente->cliente_numero_endereco ?>">
                                     <?php echo form_error('cliente_numero_endereco', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                               </div>                                  
-                              <div class="col-md-3">
+                              <div class="col-md-4">
+                                  <label>Complemento</label>
+                                  <input type="text" class="form-control form-control-user" name="cliente_complemento" placeholder="Complemento de endereço" value="<?php echo $cliente->cliente_complemento ?>">
+                                  <?php echo form_error('cliente_complemento', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                              </div>                                  
+                              
+                          </div>
+                                
+                          <div class="form-group row">
+                              <div class="col-md-5">
                                   <label>Bairro</label>
                                   <input type="text" class="form-control form-control-user " name="cliente_bairro" placeholder="Seu Bairro" value="<?php echo $cliente->cliente_bairro ?>">
                                     <?php echo form_error('cliente_bairro', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
-                              </div>                                  
-                              <div class="col-md-3">
-                                  <label>Cidade</label>
-                                  <input type="text" class="form-control form-control-user" name="cliente_cidade" placeholder="Cidade" value="<?php echo $cliente->cliente_cidade ?>">
-                                    <?php echo form_error('cliente_cidade', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
-                              </div>                                                                
-                              <div class="col-md-1">
-                                  <label>UF</label>
-                                  <input type="text" class="form-control form-control-user" name="cliente_estado" placeholder="Estado" value="<?php echo $cliente->cliente_estado ?>">
-                                    <?php echo form_error('cliente_estado', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
-                              </div>                                                                                              
-                          </div>                            
+                              </div>    
 
-                          <div class="form-group row">
-                              <div class="col-md-12">
-                                  <label>Observações</label>
-                                  <textarea class="form-control form-control-user" name="cliente_obs"><?php echo $cliente->cliente_obs ?></textarea>
-                                  <?php echo form_error('cliente_obs', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
-                              </div>                                  
-                          </div>                                                            
+                            <div class="col-md-2">
+                                <label>Cep</label>
+                                <input type="text" class="form-control form-control-user cep" name="cliente_cep" placeholder="Seu Cep" value="<?php echo $cliente->cliente_cep ?>">
+                                  <?php echo form_error('cliente_cep', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                            </div>                                                                                              
+
+                            <div class="col-md-4">
+                                <label>Cidade</label>
+                                <input type="text" class="form-control form-control-user" name="cliente_cidade" placeholder="Cidade" value="<?php echo $cliente->cliente_cidade ?>">
+                                  <?php echo form_error('cliente_cidade', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                            </div>                                                                
+                            <div class="col-md-1">
+                                <label>UF</label>
+                                <input type="text" class="form-control form-control-user" name="cliente_estado" placeholder="Estado" value="<?php echo $cliente->cliente_estado ?>">
+                                  <?php echo form_error('cliente_estado', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                            </div>
+                              
+                          </div>                                                                                                                                                  
                           
-                                <input type="hidden" name="cliente_id" value="<?php echo $cliente->cliente_id; ?>" />     
-                                
+                          </fieldset>
+                            
+                            <fieldset class="mt-4 border p-2" >
+                                <legend class="font-small"><i class="fas fa-tools">&nbsp;Configurações </i> </legend>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                  <label>Cliente ativo</label>
+                                  <select class="custom-select" name="cliente_ativo">
+                                      <option value="0" <?php echo $cliente->cliente_ativo == 0 ? 'selected' : '' ; ?> >Não</option>
+                                      <option value="1" <?php echo $cliente->cliente_ativo == 1 ? 'selected' : '' ; ?> >Sim</option>
+                                  </select>                                          
+                                </div>                                                                                              
+
+                                <div class="col-md-8">
+                                    <label>Observações</label>
+                                    <textarea class="form-control form-control-user" name="cliente_obs"><?php echo $cliente->cliente_obs ?></textarea>
+                                    <?php echo form_error('cliente_obs', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
+                                </div>                                  
+                            </div>    
+                            </fieldset>
+                            
+                          <input type="hidden" name="cliente_id" value="<?php echo $cliente->cliente_id; ?>" /> 
+                          <input type="hidden" name="cliente_tipo" value="<?php echo $cliente->cliente_tipo; ?>" /> 
+                          
+                          <br>      
                           <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                          <a title = "Voltar" href="<?php echo base_url('clientes'); ?>" class="btn btn-success btn-sm ml-2">                                
+                             voltar</a>
+
                         </form>
                             
                             
