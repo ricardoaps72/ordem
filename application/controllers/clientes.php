@@ -41,6 +41,125 @@ class Clientes extends CI_Controller{
         $this->load->view('layout/footer');
     }
     
+    public function add () {
+
+        $this->form_validation->set_rules('cliente_nome', '', 'trim|required|min_length[4]|max_length[45]');
+        $this->form_validation->set_rules('cliente_sobrenome', '', 'trim|required|min_length[4]|max_length[45]');
+        $this->form_validation->set_rules('cliente_data_nascimento', '', 'trim|required');
+
+        $cliente_tipo = $this->input->post('cliente_tipo');
+        
+        if ($cliente_tipo == 1) {
+            $this->form_validation->set_rules('cliente_cpf', '', 'trim|required|exact_length[14]|is_unique[clientes.cliente_cpf_cnpj]|callback_valida_cpf');
+        }else {
+            $this->form_validation->set_rules('cliente_cnpj', '', 'trim|required|exact_length[18]|is_unique[clientes.cliente_cpf_cnpj]|callback_valida_cnpj');
+        }
+
+        $this->form_validation->set_rules('cliente_rg_ie', '','required|max_length[20]|is_unique[clientes.cliente_rg_ie]');
+
+        $this->form_validation->set_rules('cliente_email','','required|valid_email|max_length[100]|is_unique[clientes.cliente_email]');
+
+
+        if (!empty($this->input->post('cliente_telefone'))){
+            $this->form_validation->set_rules('cliente_telefone','','required|max_length[15]|is_unique[clientes.cliente_telefone]');
+        }
+
+        if (!empty($this->input->post('cliente_celular'))){
+            $this->form_validation->set_rules('cliente_celular','','required|max_length[15]|is_unique[clientes.cliente_celular]');
+        }
+
+        $this->form_validation->set_rules('cliente_cep','','required|max_length[9]');
+        $this->form_validation->set_rules('cliente_endereco','','required|max_length[155]');
+        $this->form_validation->set_rules('cliente_numero_endereco','','required|max_length[20]');
+        $this->form_validation->set_rules('cliente_bairro','','required|max_length[45]');
+        $this->form_validation->set_rules('cliente_complemento','','max_length[145]');
+        $this->form_validation->set_rules('cliente_cidade','','required|max_length[50]');
+        $this->form_validation->set_rules('cliente_estado','','trim|required|exact_length[2]');
+        $this->form_validation->set_rules('cliente_obs','','trim|max_length[500]');      
+
+        if($this->form_validation->run()){              
+
+        $data = elements(
+                array(
+                'cliente_nome',
+                'cliente_sobrenome',
+                'cliente_email',
+                'cliente_telefone',
+                'cliente_celular',
+                'cliente_data_nascimento',
+                'cliente_endereco',
+                'cliente_numero_endereco',
+                'cliente_complemento',
+                'cliente_bairro',
+                'cliente_cep',
+                'cliente_cidade',
+                'cliente_estado',
+                'cliente_ativo',
+                'cliente_obs',                   
+                'cliente_tipo',                        
+                ), 
+                $this->input->post()
+                );
+
+            if ($cliente_tipo == 1) {
+
+                $data['cliente_cpf_cnpj'] = $this->input->post('cliente_cpf');
+                $data['cliente_rg_ie'] = $this->input->post('cliente_rg_ie');
+
+            } else {
+
+                $data['cliente_cpf_cnpj'] = $this->input->post('cliente_cnpj');
+                $data['cliente_rg_ie'] = $this->input->post('cliente_rg_ie');                    
+            }
+
+            $data['cliente_estado'] = strtoupper($this->input->post('cliente_estado'));
+
+            $data = html_escape($data);
+
+            $this->core_model->insert('clientes', $data);
+
+            redirect('clientes');
+
+
+        } else {
+
+            //erro de validação
+
+        $data = array(
+        'titulo' => 'Cadstrar Cliente',
+
+        'scripts' => array(
+            'vendor/mask/jquery.mask.min.js',
+            'vendor/mask/app.js',
+            'js/clientes.js'
+           ),
+        );
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('clientes/add');
+        $this->load->view('layout/footer');
+
+
+        }
+
+    }
+    
+    public function del($cliente_id = NULL){
+        
+        if (!$cliente_id || !$this->core_model->get_by_id('clientes', array('cliente_id' => $cliente_id))) {
+            
+            $this->session->set_flashdata('error', 'Cliente não encontrado');
+            redirect('clientes');
+            
+        } else {
+            
+            $this->core_model->delete('clientes', array('cliente_id' => $cliente_id));
+            redirect('clientes');
+            
+        }        
+        
+    }
+    
     public function edit($cliente_id = NULL){
         
         if (!$cliente_id || !$this->core_model->get_by_id('clientes', array('cliente_id' => $cliente_id))){
@@ -213,7 +332,7 @@ class Clientes extends CI_Controller{
         
         
     }
-    
+           
     public function check_rg($cliente_rg_ie){
         
         $cliente_id = $this->input->post('cliente_id');
