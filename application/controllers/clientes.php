@@ -164,7 +164,7 @@ class Clientes extends CI_Controller{
         
         if (!$cliente_id || !$this->core_model->get_by_id('clientes', array('cliente_id' => $cliente_id))){
             
-            $this->session->set_flasdata('error', 'Cliente não encontrado');
+            $this->session->set_flashdata('error', 'Cliente não encontrado');
             redirect('clientes');
         } else {
             
