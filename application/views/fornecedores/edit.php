@@ -154,7 +154,7 @@
                                                     
                           <br>      
                           <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
-                          <a title = "Voltar" href="<?php echo base_url('fornecedores'); ?>" class="btn btn-success btn-sm ml-2">                                
+                          <a title = "Voltar" href="<?php echo base_url($this->router->fetch_class()); ?>" class="btn btn-success btn-sm ml-2">                                
                              voltar</a>
 
                         </form>

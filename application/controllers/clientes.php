@@ -295,9 +295,9 @@ class Clientes extends CI_Controller{
                 
                 redirect('clientes');
                 
-                echo '<pre>';
-                print_r($this->input->post());
-                exit();
+//                echo '<pre>';
+//                print_r($this->input->post());
+//                exit();
                 
 //                exit('Validado');
                 
