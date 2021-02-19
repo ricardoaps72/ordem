@@ -139,15 +139,13 @@ class Vendedores extends CI_Controller{
 
         } else {
 
-            
-            $this->form_validation->set_rules('vendedor_codigo', '', 'trim|required|min_length[4]|max_length[200]|callback_check_razao_social');            
-            $this->form_validation->set_rules('vendedor_nome_completo', '', 'trim|required|min_length[4]|max_length[145]|callback_check_nome_fantasia');
-            $this->form_validation->set_rules('vendedor_cpf', '', 'trim|required|callback_valida_cnpj');            
-            $this->form_validation->set_rules('vendedor_rg', '','required|max_length[20]|callback_check_ie');
+                         
+            $this->form_validation->set_rules('vendedor_nome_completo', '', 'trim|required|min_length[4]|max_length[200]');
+            $this->form_validation->set_rules('vendedor_cpf', '', 'trim|required|exact_length[14]|callback_valida_cpf');            
+            $this->form_validation->set_rules('vendedor_rg', '','required|max_length[20]|callback_check_rg');
             $this->form_validation->set_rules('vendedor_email','','required|valid_email|max_length[100]|callback_check_email');                        
             $this->form_validation->set_rules('vendedor_telefone','','required|max_length[15]|callback_check_telefone');
             $this->form_validation->set_rules('vendedor_celular','','required|max_length[15]|callback_check_celular');
-            $this->form_validation->set_rules('vendedor_contato','','required|max_length[100]');            
             $this->form_validation->set_rules('vendedor_cep','','required|max_length[9]');
             $this->form_validation->set_rules('vendedor_endereco','','required|max_length[155]');
             $this->form_validation->set_rules('vendedor_numero_endereco','','required|max_length[20]');
@@ -170,7 +168,6 @@ class Vendedores extends CI_Controller{
                 [vendedor_telefone] => (11) 3456-8956
                 [vendedor_celular] => 
                 [vendedor_email] => rssoftware@email.com
-                [vendedor_contato] => Ricardo
                 [vendedor_cep] => 
                 [vendedor_endereco] => 
                 [vendedor_numero_endereco] => 
@@ -192,7 +189,6 @@ class Vendedores extends CI_Controller{
                     'vendedor_email',
                     'vendedor_telefone',
                     'vendedor_celular',
-                    'vendedor_contato',
                     'vendedor_endereco',
                     'vendedor_numero_endereco',
                     'vendedor_complemento',
@@ -222,13 +218,13 @@ class Vendedores extends CI_Controller{
                     'vendor/mask/jquery.mask.min.js',
                     'vendor/mask/app.js',
                 ),
-                'fornecedor' => $this->core_model->get_by_id('vendedores', array('vendedor_id' => $vendedor_id)),            
+                'vendedor' => $this->core_model->get_by_id('vendedores', array('vendedor_id' => $vendedor_id)),            
 
                 );  
 
-    //            echo '<pre>';
-    //            print_r($data['fornecedor']);
-    //            exit(); 
+//                echo '<pre>';
+//                print_r($data['fornecedor']);
+//                exit(); 
 
 
                 $this->load->view('layout/header', $data);
@@ -239,36 +235,13 @@ class Vendedores extends CI_Controller{
         
     }
     
-    public function check_razao_social($vendedor_razao){
+   
+    public function check_rg($vendedor_rg){
         
         $vendedor_id = $this->input->post('vendedor_id');
         
-        if($this->core_model->get_by_id('vendedores', array('vendedor_razao' => $vendedor_razao, 'vendedor_id != ' => $vendedor_id ))) {
-            $this->form_validation->set_message('check_razao_social', 'Esse documento já existe');
-            return False;
-        } else {
-            return True;
-        }
-    }
-    
-    public function check_nome_fantasia($vendedor_nome_fantasia){
-        
-        $vendedor_id = $this->input->post('vendedor_id');
-        
-        if($this->core_model->get_by_id('vendedores', array('vendedor_nome_fantasia' => $vendedor_nome_fantasia, 'vendedor_id != ' => $vendedor_id ))) {
-            $this->form_validation->set_message('check_nome_fantasia', 'Esse documento já existe');
-            return False;
-        } else {
-            return True;
-        }
-    }
-    
-    public function check_ie($vendedor_ie){
-        
-        $vendedor_id = $this->input->post('vendedor_id');
-        
-        if($this->core_model->get_by_id('vendedores', array('vendedor_ie' => $vendedor_ie, 'vendedor_id != ' => $vendedor_id ))) {
-            $this->form_validation->set_message('check_ie', 'Esse documento já existe');
+        if($this->core_model->get_by_id('vendedores', array('vendedor_rg' => $vendedor_rg, 'vendedor_id != ' => $vendedor_id ))) {
+            $this->form_validation->set_message('check_rg', 'Esse documento já existe');
             return False;
         } else {
             return True;
@@ -311,88 +284,40 @@ class Vendedores extends CI_Controller{
         }
     }
 
-    public function valida_cnpj($cnpj) {
-
-        // Verifica se um número foi informado
-        if (empty($cnpj)) {
-            $this->form_validation->set_message('valida_cnpj', 'Por favor digite um CNPJ válido');
-            return false;
-        }
+    public function valida_cpf($cpf) {
 
         if ($this->input->post('vendedor_id')) {
 
             $vendedor_id = $this->input->post('vendedor_id');
 
-            if ($this->core_model->get_by_id('vendedores', array('vendedor_id !=' => $vendedor_id, 'vendedor_cnpj' => $cnpj))) {
-                $this->form_validation->set_message('valida_cnpj', 'Esse CNPJ já existe');
+            if ($this->core_model->get_by_id('vendedores', array('vendedor_id !=' => $vendedor_id, 'vendedor_cpf' => $cpf))) {
+                $this->form_validation->set_message('valida_cpf', 'Este CPF já existe');
                 return FALSE;
             }
         }
 
-        // Elimina possivel mascara
-        $cnpj = preg_replace("/[^0-9]/", "", $cnpj);
-        $cnpj = str_pad($cnpj, 14, '0', STR_PAD_LEFT);
+        $cpf = str_pad(preg_replace('/[^0-9]/', '', $cpf), 11, '0', STR_PAD_LEFT);
+        // Verifica se nenhuma das sequências abaixo foi digitada, caso seja, retorna falso
+        if (strlen($cpf) != 11 || $cpf == '00000000000' || $cpf == '11111111111' || $cpf == '22222222222' || $cpf == '33333333333' || $cpf == '44444444444' || $cpf == '55555555555' || $cpf == '66666666666' || $cpf == '77777777777' || $cpf == '88888888888' || $cpf == '99999999999') {
 
-
-        // Verifica se o numero de digitos informados é igual a 11 
-        if (strlen($cnpj) != 14) {
-            $this->form_validation->set_message('valida_cnpj', 'Por favor digite um CNPJ válido');
-            return false;
-        }
-
-        // Verifica se nenhuma das sequências invalidas abaixo 
-        // foi digitada. Caso afirmativo, retorna falso
-        else if ($cnpj == '00000000000000' ||
-                $cnpj == '11111111111111' ||
-                $cnpj == '22222222222222' ||
-                $cnpj == '33333333333333' ||
-                $cnpj == '44444444444444' ||
-                $cnpj == '55555555555555' ||
-                $cnpj == '66666666666666' ||
-                $cnpj == '77777777777777' ||
-                $cnpj == '88888888888888' ||
-                $cnpj == '99999999999999') {
-            $this->form_validation->set_message('valida_cnpj', 'Por favor digite um CNPJ válido');
-            return false;
-
-            // Calcula os digitos verificadores para verificar se o
-            // CPF é válido
+            $this->form_validation->set_message('valida_cpf', 'Por favor digite um CPF válido');
+            return FALSE;
         } else {
+            // Calcula os números para verificar se o CPF é verdadeiro
+            for ($t = 9; $t < 11; $t++) {
+                for ($d = 0, $c = 0; $c < $t; $c++) {
 
-            $j = 5;
-            $k = 6;
-            $soma1 = "";
-            $soma2 = "";
-
-            for ($i = 0; $i < 13; $i++) {
-
-                $j = $j == 1 ? 9 : $j;
-                $k = $k == 1 ? 9 : $k;
-
-                //$soma2 += ($cnpj{$i} * $k);
-
-                //$soma2 = intval($soma2) + ($cnpj{$i} * $k); //Para PHP com versão < 7.4
-                $soma2 = intval($soma2) + ($cnpj[$i] * $k); //Para PHP com versão > 7.4
-
-                if ($i < 12) {
-                    //$soma1 = intval($soma1) + ($cnpj{$i} * $j); //Para PHP com versão < 7.4
-                    $soma1 = intval($soma1) + ($cnpj[$i] * $j); //Para PHP com versão > 7.4
+                    $d += $cpf[$c] * (($t + 1) - $c); 
                 }
-
-                $k--;
-                $j--;
+                $d = ((10 * $d) % 11) % 10;
+                if ($cpf[$c] != $d) {
+                    $this->form_validation->set_message('valida_cpf', 'Por favor digite um CPF válido');
+                    return FALSE;
+                }
             }
-
-            $digito1 = $soma1 % 11 < 2 ? 0 : 11 - $soma1 % 11;
-            $digito2 = $soma2 % 11 < 2 ? 0 : 11 - $soma2 % 11;
-
-            if (!($cnpj{12} == $digito1) and ( $cnpj{13} == $digito2)) {
-                $this->form_validation->set_message('valida_cnpj', 'Por favor digite um CNPJ válido');
-                return false;
-            } else {
-                return true;
-            }
+            return TRUE;
         }
     }    
+       
     
 }
