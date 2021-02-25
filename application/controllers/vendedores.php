@@ -44,14 +44,13 @@ class Vendedores extends CI_Controller{
     public function add() {
         
           
-            $this->form_validation->set_rules('vendedor_codigo', '', 'trim|required|min_length[4]|max_length[200]|is_unique[vendedores.vendedor_razao]');            
-            $this->form_validation->set_rules('vendedor_nome_completo', '', 'trim|required|min_length[4]|max_length[145]|is_unique[vendedores.vendedor_nome_fantasia]');
-            $this->form_validation->set_rules('vendedor_cpf', '', 'trim|required|is_unique[vendedores.vendedor_cnpj]|callback_valida_cnpj');            
-            $this->form_validation->set_rules('vendedor_rg', '','required|max_length[20]|is_unique[vendedores.vendedor_ie]');
+            
+            $this->form_validation->set_rules('vendedor_nome_completo', '', 'trim|required|min_length[4]|max_length[200]|is_unique[vendedores.vendedor_nome_completo]');
+            $this->form_validation->set_rules('vendedor_cpf', '', 'trim|required|is_unique[vendedores.vendedor_cpf]|callback_valida_cpf');            
+            $this->form_validation->set_rules('vendedor_rg', '','required|max_length[20]|is_unique[vendedores.vendedor_rg]');
             $this->form_validation->set_rules('vendedor_email','','required|valid_email|max_length[100]|is_unique[vendedores.vendedor_email]');                        
             $this->form_validation->set_rules('vendedor_telefone','','required|max_length[15]|is_unique[vendedores.vendedor_telefone]');
             $this->form_validation->set_rules('vendedor_celular','','required|max_length[15]|is_unique[vendedores.vendedor_celular]');
-            $this->form_validation->set_rules('vendedor_contato','','required|max_length[100]');            
             $this->form_validation->set_rules('vendedor_cep','','required|max_length[9]');
             $this->form_validation->set_rules('vendedor_endereco','','required|max_length[155]');
             $this->form_validation->set_rules('vendedor_numero_endereco','','required|max_length[20]');
@@ -72,7 +71,6 @@ class Vendedores extends CI_Controller{
                     'vendedor_email',
                     'vendedor_telefone',
                     'vendedor_celular',
-                    'vendedor_contato',
                     'vendedor_endereco',
                     'vendedor_numero_endereco',
                     'vendedor_complemento',
@@ -101,7 +99,9 @@ class Vendedores extends CI_Controller{
                 'scripts' => array(
                     'vendor/mask/jquery.mask.min.js',
                     'vendor/mask/app.js',
-                ),                
+                ),   
+                
+                'vendedor_codigo' => $this->core_model->generate_unique_code('vendedores', 'numeric', 8, 'vendedor_codigo'),    
                     
                 );  
 
@@ -223,7 +223,7 @@ class Vendedores extends CI_Controller{
                 );  
 
 //                echo '<pre>';
-//                print_r($data['fornecedor']);
+//                print_r($data['vendedor']);
 //                exit(); 
 
 

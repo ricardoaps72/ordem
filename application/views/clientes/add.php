@@ -159,7 +159,7 @@
 
                                 <div class="col-md-8">
                                     <label>Observações</label>
-                                    <textarea class="form-control form-control-user" name="cliente_obs"></textarea>
+                                    <textarea class="form-control form-control-user" name="cliente_obs"><?php echo set_value('cliente_obs') ;?></textarea>
                                     <?php echo form_error('cliente_obs', '<small id="emailHelp" class="form-text text-muted">', '</small>') ?>  
                                 </div>                                  
                             </div>    
